@@ -1,0 +1,14 @@
+2c6d20d3580a5fdd7c5de6c26cac6b0e *DESCRIPTION
+50b868013c8a282bad02f4136d101962 *LICENSE
+729dde9b5edc8836ffe565ca1bd6bab4 *NAMESPACE
+e23dc62925cdc4a536470fe8a223c61f *R/StatBrace.R
+aad68ece08755c0dfe208dded4c4e32c *R/StatBraceLabel.R
+eb43fcbe3dcbae34f9b68d41379ae665 *R/coordCorrection.R
+de9caa03241015f8bbac28843b54d552 *R/seekBrace.R
+471f53e0dbb1b1f654a828c9202fbcd3 *R/stat_brace.R
+1d8c18dccde8411521a39b45b23a85b2 *R/stat_bracetext.R
+99df026ba550b43249378de9eadda5ee *README.md
+6f007222aef7884dfcbc83166ef8a908 *man/dot-coordCorrection.Rd
+0ff4ecc35d8ea761a74606519285188b *man/dot-seekBrace.Rd
+cc5a88c51bd6127c68bac31104ec4503 *man/stat_brace.Rd
+f8b02933455c5035de91753765cc5c3c *man/stat_bracetext.Rd
