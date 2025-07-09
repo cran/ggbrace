@@ -18,7 +18,9 @@
   distance,
   outerstart,
   width,
-  outside
+  outside,
+  bending,
+  discreteAxis = FALSE
 ){
   #to save if-statements, define 2 axes: a and b
   # a is the axis that is enclosed by the brace
@@ -36,22 +38,36 @@
   #==if mid is specified, replace -a- with its min, mid, max==#
   #==========================================================#
   base <- range(a)
+  #prevent scenarios where the median equals the outer extremes (e.g. c(1,1,2)) which would lead to a wrong brace
+  if(!is.null(mid) & is.null(bending)) mid <- median(c(.25, mid, .75), na.rm=T)
+  if(!is.null(mid) & !is.null(bending)){
+    bending <- median(c(0.0000001, abs(bending), 0.5), na.rm=T)
+    mid <- median(c(bending, mid, 1-bending), na.rm=T) #mid should be more extreme than bending (between 0-1 plus/minus bending)
+  }
+  if(is.null(mid) & median(a,na.rm=T) < base[1] + diff(base)/4) mid=.25
+  if(is.null(mid) & median(a,na.rm=T) > base[2] - diff(base)/4) mid=.75
+  #set mid if specified by user or defined in lines above
   if(!is.null(mid)) a <- c( base[1] , base[1]+diff(base)*mid, base[2] )
 
-  #============================================#
+  #===========================================#
   #==change coordinates (position and width)==#
-  #============================================#
-  #outside is TRUE for stat_brace and FALSE for geom_brace
+  #===========================================#
   if(outside){
     # change position
     if(is.null(distance)) distance <- diff(base)/50 #set distance to data points
     if(is.null(outerstart)) outerstart <- distance * direction + ifelse(direction>0, max(b), min(b)) #set position
-    if(is.null(width)) width <- diff(range(b)) / 2
+    if(is.null(width) & diff(range(b))==0) width <- 1 #if default width would be zero, set to 1
+    if(is.null(width)) width <- diff(range(b)) / 2 #otherwise use default width
     outerend <- outerstart + width * direction
     b <- c(outerstart, outerend)
-    # b <- b + outerstart - ifelse(direction>0, min(b), max(b)) #change coordinates
-    # # change width based on the original width
-    # b[b == ifelse(direction>0, max(b), min(b))] <- width + ifelse(direction>0, min(b), max(b))
+  }
+
+  #============================#
+  #==discrete Axis adjustment==#
+  #============================#
+  if(discreteAxis){
+    radius=.45
+    a <- c(min(a,na.rm=T)-radius, a, max(a,na.rm=T)+radius)
   }
 
   #=============================#

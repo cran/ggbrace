@@ -9,15 +9,17 @@
 #' @inheritParams ggplot2::geom_text
 #' @import ggplot2
 #'
-#' @param rotate number, defines where the brace is pointing to: 0=up, 90=right, 180=down, 270=left. When specified by user, will overwrite other directions the brace might have from x/y coordinates.
-#' @param width number, how wide should the braces be? If NULL (default), will be determined automatically based on the data.
-#' @param mid number, where the pointer is within the bracket space (between 0.25 and 0.75). If NULL (default), will be determined automatically based on the data.
-#' @param outside boolean, should the brace be outside of the data area or cover the data area?
-#' @param distance number, space between the brace and the nearest data point
-#' @param outerstart number, overwrites distance and provides one coordinate for all braces
-#' @param bending number, how strongly the curves of the braces should be bent (the higher the more round). Note: too high values will result in the brace showing zick-zack lines
-#' @param npoints integer, number of points generated for the brace curves (resolution). This number will be rounded to be a multiple of 4 for calculation purposes.
-#' @return ggplot2 layer object (geom_path) that can directly be added to a ggplot2 object. If a label was provided, a another layer (geom_text) is added.
+#' @param rotate number in degrees. Defines where the brace points to: 0=up (default), 90=right, 180=down, 270=left
+#' @param width number. Distance from the brace's start to its tip. If NULL (default), will be determined by data.
+#' @param mid number from 0.25 to 0.75. Position of the pointer within the brace space. If NULL (default), will be determined by data.
+#' @param outside boolean. If TRUE (default), brace is next to the data area. If FALSE, brace is inside the data area
+#' @param distance number. Space between the brace and the nearest data point. If NULL (default), will be determined by data.
+#' @param outerstart number. If not NULL, overwrites distance and sets all braces to the same origin
+#' @param bending number from 0 to 0.5. Determines bend of the brace curves (0=rectangular). If NULL (default), will be determined by data. If too high, values will result in zick-zack lines
+#' @param discreteAxis boolean. Set to TRUE if the axis along which the brace expands is discrete (often true for bar graphs)
+#' @param bracketType text choice. Either "curly" (default) or "square"
+#' @param npoints integer. Number of points generated for the brace curves. Will be rounded to be a multiple of 4 for calculation purposes.
+#' @return ggplot2 layer object (geom_path) that can directly be added to a ggplot2 object.
 #' @export
 #' @examples
 #' library(ggbrace)
@@ -66,18 +68,17 @@
 #'  coord_cartesian(y=range(iris$Sepal.Width), clip = "off") +
 #'  theme(plot.margin = unit(c(0.25, 0.11, 0.11, 0.11), units="npc"))
 #'
-#'  # braces with discrete values
-#'  df <- data.frame(x = c("a","b","c","d","e"), y = 1:5)
-#'  ggplot(df, aes(x, y)) +
-#'    geom_point() +
-#'    stat_brace(aes(x=seq_along(x)))
+#'  # braces with discrete axes
+#'  df <- iris
+#'  df$Group <- substring(iris$Species,1,1)
+#'  ggplot(df, aes(x=Species, y=Sepal.Length, group=Group)) +
+#'    geom_jitter() +
+#'    stat_brace(discreteAxis=TRUE)
 #'
 #'
 stat_brace <- function(
     mapping = NULL,
     data = NULL,
-    geom = "path",
-    position = "identity",
     ...,
     rotate = 0,
     width = NULL,
@@ -86,16 +87,18 @@ stat_brace <- function(
     distance = NULL,
     outerstart = NULL,
     bending = NULL,
-    npoints = 100,
     show.legend = FALSE,
-    inherit.aes = TRUE
+    inherit.aes = TRUE,
+    discreteAxis = FALSE,
+    bracketType = "curly",
+    npoints = 100
 ){
   ggplot2::layer(
     data = data,
     mapping = mapping,
     stat = StatBrace,
-    geom = geom,
-    position = position,
+    geom = "path",
+    position = "identity",
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
@@ -107,6 +110,8 @@ stat_brace <- function(
       outside = outside,
       distance = distance,
       outerstart = outerstart,
+      discreteAxis = discreteAxis,
+      bracketType = bracketType,
       ...
     )
   )

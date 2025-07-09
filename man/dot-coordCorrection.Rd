@@ -14,7 +14,9 @@ stats}
   distance,
   outerstart,
   width,
-  outside
+  outside,
+  bending,
+  discreteAxis = FALSE
 )
 }
 \arguments{
@@ -22,19 +24,23 @@ stats}
 
 \item{y}{vector, y value of all data points}
 
-\item{rotate}{number, defines where the brace is pointing to: 0=up, 90=right, 180=down, 270=left. When specified by user, will overwrite other directions the brace might have from x/y coordinates.}
+\item{rotate}{number in degrees. Defines where the brace points to: 0=up (default), 90=right, 180=down, 270=left}
 
-\item{mid}{number, where the pointer is within the bracket space (between 0.25 and 0.75). If NULL (default), will be determined automatically based on the data.}
+\item{mid}{number from 0.25 to 0.75. Position of the pointer within the brace space. If NULL (default), will be determined by data.}
 
-\item{textdistance}{number, distance of the label to the brace pointer}
+\item{textdistance}{number. Distance of the label to the brace pointer}
 
-\item{distance}{number, space between the brace and the nearest data point}
+\item{distance}{number. Space between the brace and the nearest data point. If NULL (default), will be determined by data.}
 
-\item{outerstart}{number, overwrites distance and provides one coordinate for all braces}
+\item{outerstart}{number. If not NULL, overwrites distance and sets all braces to the same origin}
 
-\item{width}{number, how wide should the braces be? If NULL (default), will be determined automatically based on the data.}
+\item{width}{number. Distance from the brace's start to its tip. If NULL (default), will be determined by data.}
 
-\item{outside}{boolean, should the brace be outside of the data area or cover the data area?}
+\item{outside}{boolean. If TRUE (default), brace is next to the data area. If FALSE, brace is inside the data area}
+
+\item{bending}{number from 0 to 0.5. Determines bend of the brace curves (0=rectangular). If NULL (default), will be determined by data. If too high, values will result in zick-zack lines}
+
+\item{discreteAxis}{boolean. Set to TRUE if the axis along which the brace expands is discrete (often true for bar graphs)}
 }
 \description{
 Imports:

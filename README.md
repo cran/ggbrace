@@ -17,7 +17,11 @@ Version 0.1.1 (Feb 2024) of ggbrace removed the original `geom_brace` function, 
 
 
 # Installation
-Install the package from the git repository:
+Install the package from CRAN
+``` r
+install.packages("ggbrace")
+```
+or from this git repository:
 ``` r
 devtools::install_github("nicolash2/ggbrace")
 ```
@@ -107,26 +111,29 @@ plt + stat_brace(outerstart = 4.5) +
 ```
 <img src="readme_files/outside.png"/>
 
-# Discrete values
+# New Features - only in github version
 
-Unfortunately, as of now, ggbrace isn't behaving well with discrete x/y axes, which is why they will have to be wrapped into the `seq_along` function within the `aes()`.
+## Discrete/Categorical axis
 
-```r
-df <- data.frame(x = c("a","b","c","d","e"), y = 1:5)     
-
-ggplot(df, aes(x, y)) +
-  geom_point() +
-  stat_brace(aes(x=seq_along(x)))
-```
-
-This wrapping into the `seq_along` function is also used in the `coord_cartesian` function when trying to plot outside the plotting area.
+Use `discreteAxis=TRUE` to ensure the braces embrace the category.
 
 ```r
-df <- data.frame(x = c("a","b","c","d","e"), y = 1:5)     
-
-ggplot(df, aes(x, y)) +
-  geom_point() +
-  stat_brace(aes(x=seq_along(x)), rotate=90) +
-  coord_cartesian(x=range(seq_along(df$x)), clip = "off") + 
-  theme(plot.margin = unit(c(0.5, 7, 0.5, 0.5), units="lines")) #other units would be "cm" etc.
+df <- iris
+df$Group <- substring(iris$Species,1,1)
+ggplot(df, aes(x=Species, y=Sepal.Length, group=Group)) +
+    geom_jitter() +
+    stat_brace(discreteAxis=TRUE)
 ```
+
+<img src="readme_files/brace_discreteAxis.png"/>
+
+## Square brackets
+
+Use `bracketType="square"` to produce square brackets instead of curly ones. The bracket have the same width as the curly ones in order to comply with the text. Use the `width` parameter to adjust their size.
+
+```r
+plt + stat_brace(bracketType="square", width=.2)
+```
+
+<img src="readme_files/brace_squareBrackets.png"/>
+
